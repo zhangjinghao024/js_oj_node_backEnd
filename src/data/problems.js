@@ -37,33 +37,10 @@ function twoSum(nums, target) {
   },
   {
     id: '2',
-    title: '数组去重',
+    title: '2 实现节流函数（throttle）',
     difficulty: 'Easy',
-    description: `实现一个函数,对数组进行去重,返回一个新数组。
-
-要求:
-- 保持原数组元素的相对顺序
-- 不修改原数组
-- 可以使用任何方法实现`,
-    examples: [
-      {
-        input: '[1, 2, 2, 3, 4, 4, 5]',
-        output: '[1, 2, 3, 4, 5]'
-      },
-      {
-        input: '[1, 1, 1, 1]',
-        output: '[1]'
-      }
-    ],
-    constraints: [
-      '0 <= arr.length <= 10^4',
-      '数组元素可以是任意类型'
-    ],
-    hints: [
-      '可以使用 Set 数据结构',
-      '可以使用 filter 方法',
-      '可以使用对象/Map 来记录已出现的元素'
-    ],
+    description: `节流函数原理:指频繁触发事件时，只会在指定的时间段内执行事件回调，即触发事件间隔大于等于指定的时间才会执行回调函数。总结起来就是：事件，按照一段时间的间隔来进行触发。。
+`,
     template: `/**
  * @param {any[]} arr
  * @return {any[]}
@@ -99,33 +76,14 @@ function unique(arr) {
   },
   {
     id: '3',
-    title: '实现 Array.prototype.flat',
-    difficulty: 'Medium',
-    description: `实现数组的 flat 方法,用于将嵌套的数组"拉平"。
-
-flat(depth) 方法会按照一个可指定的深度递归遍历数组,并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。
-
-参数:
-- depth: 指定要提取嵌套数组的结构深度,默认值为 1`,
-    examples: [
-      {
-        input: 'arr = [1, 2, [3, 4]], depth = 1',
-        output: '[1, 2, 3, 4]'
-      },
-      {
-        input: 'arr = [1, 2, [3, 4, [5, 6]]], depth = 2',
-        output: '[1, 2, 3, 4, 5, 6]'
-      }
-    ],
-    constraints: [
-      '0 <= arr.length <= 10^4',
-      '0 <= depth <= 10'
-    ],
-    hints: [
-      '可以使用递归实现',
-      '需要判断元素是否为数组',
-      '注意 depth 的边界条件'
-    ],
+    title: '3 实现instanceOf',
+    difficulty: 'Easy',
+    description: `步骤1：先取得当前类的原型，当前实例对象的原型链
+​步骤2：一直循环（执行原型链的查找机制）
+取得当前实例对象原型链的原型链（proto = proto.__proto__，沿着原型链一直向上查找）
+如果 当前实例的原型链__proto__上找到了当前类的原型prototype，则返回 true
+如果 一直找到Object.prototype.__proto__ == null，Object的基类(null)上面都没找到，则返回 false"。
+`,
     template: `/**
  * @param {any[]} arr
  * @param {number} depth
@@ -162,35 +120,13 @@ function flatArray(arr, depth = 1) {
   },
   {
     id: '4',
-    title: '实现防抖函数 debounce',
+    title: '实现new的过程',
     difficulty: 'Medium',
-    description: `实现一个防抖函数 debounce。
+    description: `new操作符做了这些事：
 
-防抖函数的作用是:在事件被触发 n 秒后再执行回调,如果在这 n 秒内又被触发,则重新计时。
-
-应用场景:
-- 搜索框输入
-- 窗口 resize
-- 滚动事件
-
-参数:
-- func: 要防抖的函数
-- wait: 等待时间(毫秒)`,
-    examples: [
-      {
-        input: 'debounce(fn, 1000) 连续调用',
-        output: '只有最后一次调用在1秒后执行'
-      }
-    ],
-    constraints: [
-      'wait >= 0',
-      'func 必须是函数'
-    ],
-    hints: [
-      '使用 setTimeout 实现',
-      '需要清除之前的定时器',
-      '注意 this 和参数的传递'
-    ],
+创建一个全新的对象obj，继承构造函数的原型：这个对象的__proto__要指向构造函数的原型prototype
+执行构造函数，使用 call/apply 改变 this 的指向（将obj作为this）
+返回值为object类型则作为new方法的返回值返回，否则返回上述全新对象obj`,
     template: `/**
  * @param {Function} func
  * @param {number} wait
@@ -220,33 +156,20 @@ function debounce(func, wait) {
   },
   {
     id: '5',
-    title: '实现深拷贝',
-    difficulty: 'Hard',
-    description: `实现一个深拷贝函数,能够正确拷贝各种数据类型。
+    title: '5 实现call方法',
+    difficulty: 'Easy',
+    description: `call做了什么:
 
-要求:
-- 支持对象、数组、Date、RegExp 等类型
-- 处理循环引用
-- 保持原型链
+将函数设为对象的属性
+执行和删除这个函数
+指定this到函数并传入给定参数执行函数
+如果不传入参数，默认指向 window
+分析：如何在函数执行时绑定this
 
-注意事项:
-- 不能使用 JSON.parse(JSON.stringify())
-- 需要考虑各种边界情况`,
-    examples: [
-      {
-        input: 'obj = { a: 1, b: { c: 2 } }',
-        output: '{ a: 1, b: { c: 2 } } (新对象)'
-      }
-    ],
-    constraints: [
-      '对象嵌套层级 <= 100',
-      '需要处理循环引用'
-    ],
-    hints: [
-      '使用 WeakMap 处理循环引用',
-      '需要判断数据类型',
-      '递归处理嵌套结构'
-    ],
+如var obj = {x:100,fn() { this.x }}
+执行obj.fn() ,此时fn内部的this就指向了obj
+可借此来实现函数绑定this
+原生call、apply传入的this如果是值类型，会被new Object（如fn.call('abc')）`,
     template: `/**
  * @param {any} obj
  * @return {any}
@@ -275,7 +198,105 @@ function deepClone(obj) {
     ],
     sampleTestCases: [0, 1],
     functionName: 'deepClone'
-  }
+  },
+  {
+    id: '6',
+    title: '6 实现apply方法',
+    difficulty: 'Easy',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '7',
+    title: '实现bind方法',
+    difficulty: 'Easy',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '8',
+    title: '实现完整的深拷贝',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '9',
+    title: '实现类的继承',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '10',
+    title: '实现 Promise.resolve',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '11',
+    title: '实现 Promise.reject',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '12',
+    title: '实现 Promise.finally',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '13',
+    title: '实现 Promise.all',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '14',
+    title: '实现 Promise.allSettle',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '15',
+    title: '实现 Promise.race',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '16',
+    title: '实现 Promise',
+    difficulty: 'Hard',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '17',
+    title: '实现【发布订阅】模式',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '18',
+    title: '实现【观察者】模式',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
+  {
+    id: '19',
+    title: '实现【单例】模式',
+    difficulty: 'Medium',
+    description: ``,
+    template: ``,
+  },
 ];
 
 // 根据ID获取题目
