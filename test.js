@@ -1,24 +1,85 @@
-import OpenAI from "openai";
+"use strict"
 
-try {
-    const openai = new OpenAI(
-        {
-            // 若没有配置环境变量，请用阿里云百炼API Key将下行替换为：apiKey: "sk-xxx",
-            // 新加坡和北京地域的API Key不同。获取API Key：https://help.aliyun.com/zh/model-studio/get-api-key
-            apiKey: 'sk-1f82060da9964530b09cb0051d75ef81',
-            // 以下是北京地域base_url，如果使用新加坡地域的模型，需要将base_url替换为：https://dashscope-intl.aliyuncs.com/compatible-mode/v1
-            baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+const Nls = require("alibabacloud-nls")
+const fs = require("fs")
+const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs))
+
+const URL = "wss://nls-gateway.cn-shanghai.aliyuncs.com/ws/v1"
+const APPKEY = "KUl8oFxZENWhNfqY"
+const TOKEN = "6916c956e5ed4e0db3f29dd93e718fd8"
+
+let audioStream = fs.createReadStream("test1.pcm", {
+    encoding: "binary",
+    highWaterMark: 1024
+})
+let b1 = []
+
+audioStream.on("data", (chunk) => {
+    let b = Buffer.from(chunk, "binary")
+    b1.push(b)
+})
+
+audioStream.on("close", async ()=>{
+    while (true) {
+        let st = new Nls.SpeechTranscription({
+            url: URL,
+            appkey:APPKEY,
+            token:TOKEN
+        })
+
+        st.on("started", (msg)=>{
+            console.log("Client recv started:", msg)
+        })
+
+        st.on("changed", (msg)=>{
+            console.log("Client recv changed:", msg)
+        })
+
+        st.on("completed", (msg)=>{
+            console.log("Client recv completed:", msg)
+        })
+
+        st.on("closed", () => {
+            console.log("Client recv closed")
+        })
+
+        st.on("failed", (msg)=>{
+            console.log("Client recv failed:", msg)
+        })
+
+        st.on("begin", (msg)=>{
+            console.log("Client recv begin:", msg)
+        })
+
+        st.on("end", (msg)=>{
+            console.log("Client recv end:", msg)
+        })
+
+        try {
+            await st.start(st.defaultStartParams(), true, 6000)
+        } catch(error) {
+            console.log("error on start:", error)
+            continue
         }
-    );
-    const completion = await openai.chat.completions.create({
-        model: "qwen-plus",  //模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
-        messages: [
-            { role: "system", content: "You are a helpful assistant." },
-            { role: "user", content: "你是谁？" }
-        ],
-    });
-    console.log(completion.choices[0].message.content);
-} catch (error) {
-    console.log(`错误信息：${error}`);
-    console.log("请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code");
-}
+
+        try {
+            for (let b of b1) {
+                if (!st.sendAudio(b)) {
+                    throw new Error("send audio failed")
+                }
+                await sleep(20)
+            }
+        } catch(error) {
+            console.log("sendAudio failed:", error)
+            continue
+        }
+
+        try {
+            console.log("close...")
+            await st.close()
+        } catch(error) {
+            console.log("error on close:", error)
+        }
+        await sleep(2000)
+    }
+})
