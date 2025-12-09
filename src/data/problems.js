@@ -203,28 +203,73 @@ function deepClone(obj) {
     id: '6',
     title: '6 实现apply方法',
     difficulty: 'Easy',
-    description: ``,
+    description: `
+        func.call(thisArg, arg1, arg2, arg3, ...)    // 参数逐个传递
+    func.apply(thisArg, [arg1, arg2, arg3, ...]) // 参数作为数组传递`,
     template: ``,
   },
   {
     id: '7',
     title: '实现bind方法',
     difficulty: 'Easy',
-    description: ``,
+    description: `
+    bind 的实现对比其他两个函数略微地复杂了一点，涉及到参数合并(类似函数柯里化)，因为 bind 需要返回一个函数，需要判断一些边界问题，以下是 bind 的实现
+
+bind 返回了一个函数，对于函数来说有两种方式调用，一种是直接调用，一种是通过 new 的方式，我们先来说直接调用的方式
+对于直接调用来说，这里选择了 apply 的方式实现，但是对于参数需要注意以下情况：因为 bind 可以实现类似这样的代码 f.bind(obj, 1)(2)，所以我们需要将两边的参数拼接起来
+最后来说通过 new 的方式，对于 new 的情况来说，不会被任何方式改变 this，所以对于这种情况我们需要忽略传入的 this
+箭头函数的底层是bind，无法改变this，只能改变参数
+简洁版本
+
+对于普通函数，绑定this指向
+对于构造函数，要保证原函数的原型对象上的属性不能丢`,
     template: ``,
   },
   {
     id: '8',
     title: '实现完整的深拷贝',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    调用深拷贝方法，若属性为值类型，则直接返回；若属性为引用类型，则递归遍历。这就是我们在解这一类题时的核心的方法。
+    
+    进阶版
+
+解决拷贝循环引用问题
+解决拷贝对应原型问题`,
     template: ``,
   },
   {
     id: '9',
     title: '实现类的继承',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    // 父类
+function Parent(name) {
+    this.name = name;
+    this.colors = ['red', 'blue'];
+}
+
+Parent.prototype.sayHello = function() {
+    console.log(\`Hello, I'm ${this.name}\`);
+};
+
+// 子类
+function Child(name, age) {
+    // 1. 继承父类的实例属性
+    Parent.call(this, name);
+    this.age = age;
+}
+
+// 2. 继承父类的原型方法
+Child.prototype = Object.create(Parent.prototype);
+
+// 3. 修复构造函数指向
+Child.prototype.constructor = Child;
+
+// 4. 添加子类自己的方法
+Child.prototype.sayAge = function() {
+    console.log(\`I'm ${this.age} years old\`);
+};`,
     template: ``,
   },
   {
