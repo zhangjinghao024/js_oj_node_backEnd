@@ -4,18 +4,18 @@ import apiRoutes from './routes/api.js';
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// 手动设置 CORS 头部（更可靠）
+// 手动设置 CORS 头部（更可靠）1
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
-  
+
   // 处理 OPTIONS 预检请求
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
-  
+
   next();
 });
 
