@@ -35,7 +35,7 @@ export const quizQuestionsByCategory = {
         },
         {
             id: 'html2',
-            title: '块级元素和行内元素的区别',
+            title: '块级元素和11行内元素的区别',
             difficulty: 'Easy',
             category: 'HTML',
             question: `请说明块级元素和行内元素的区别，并各举3个例子。`,
@@ -78,79 +78,95 @@ export const quizQuestionsByCategory = {
             question: `请解释 CSS 盒模型的组成部分，以及标准盒模型和 IE 盒模型的区别。`,
             tags: ['盒模型', '布局', '基础'],
             points: 10,
-            referenceAnswer: `**盒模型组成部分：**
+            referenceAnswer: `**盒模型组成：**
+1. Content（内容）
+2. Padding（内边距）
+3. Border（边框）
+4. Margin（外边距）
 
-1. **Content（内容区）**：实际内容
-2. **Padding（内边距）**：内容与边框之间的距离
-3. **Border（边框）**：边框
-4. **Margin（外边距）**：边框与其他元素之间的距离
-
-**两种盒模型的区别：**
-
-1. **标准盒模型（content-box）**
-   - width/height 只包含 content
-   - 实际宽度 = width + padding + border
-
-2. **IE 盒模型（border-box）**
-   - width/height 包含 content + padding + border
-   - 实际宽度 = width
-
-**切换方式：**
-\`\`\`css
-box-sizing: content-box;  /* 标准盒模型 */
-box-sizing: border-box;   /* IE 盒模型 */
-\`\`\``,
-            keywords: ['content', 'padding', 'border', 'margin', 'box-sizing'],
-            hints: [
-                '四个组成部分：content、padding、border、margin',
-                'box-sizing 属性',
-                'width 计算方式不同'
-            ]
+**区别：**
+- 标准盒模型：width = content
+- IE盒模型：width = content + padding + border`,
+            hints: ['四个组成部分', 'box-sizing 属性']
         },
         {
             id: 'css2',
+            title: 'BFC（块级格式化上下文）',
+            difficulty: 'Medium',
+            category: 'CSS',
+            question: `请说明什么是 BFC（块级格式化上下文），如何触发 BFC，以及 BFC 的应用场景。`,
+            tags: ['BFC', '布局', '格式化上下文'],
+            points: 15,
+            referenceAnswer: `**什么是 BFC：**
+
+BFC（Block Formatting Context，块级格式化上下文）是 Web 页面中一个独立的渲染区域，内部元素的布局不会影响到外部元素。
+
+**如何触发 BFC：**
+
+1. **根元素**：html 元素
+2. **浮动元素**：float 不为 none
+3. **绝对定位元素**：position 为 absolute 或 fixed
+4. **display 属性**：inline-block、table-cell、flex、grid 等
+5. **overflow 属性**：不为 visible（如 hidden、auto、scroll）
+
+**BFC 的特性和应用：**
+
+1. **防止外边距重叠**
+   \`\`\`css
+   .container {
+       overflow: hidden; /* 创建 BFC */
+   }
+   \`\`\`
+
+2. **清除浮动**
+   \`\`\`css
+   .parent {
+       overflow: hidden; /* 包含浮动子元素 */
+   }
+   \`\`\`
+
+3. **防止文字环绕**
+   \`\`\`css
+   .sidebar { float: left; }
+   .content { overflow: hidden; } /* 不被浮动元素覆盖 */
+   \`\`\`
+
+4. **自适应两栏布局**
+   \`\`\`css
+   .left { float: left; width: 200px; }
+   .right { overflow: hidden; } /* 自适应剩余宽度 */
+   \`\`\``,
+            keywords: ['BFC', '格式化上下文', '浮动', 'overflow', '外边距重叠', '清除浮动'],
+            hints: [
+                'BFC 是独立的渲染区域',
+                'overflow: hidden 可以触发',
+                '可用于清除浮动',
+                '防止 margin 重叠',
+                '实现自适应布局'
+            ]
+        },
+        {
+            id: 'css3',
             title: 'Flex 布局',
             difficulty: 'Medium',
             category: 'CSS',
             question: `请说明 Flex 布局的主要属性及其作用。`,
             tags: ['Flex', '布局', '响应式'],
             points: 15,
-            referenceAnswer: `**容器属性（父元素）：**
+            referenceAnswer: `**容器属性：**
+1. flex-direction：主轴方向
+2. justify-content：主轴对齐
+3. align-items：交叉轴对齐
+4. flex-wrap：换行
 
-1. **flex-direction**：主轴方向
-   - row（默认）、row-reverse、column、column-reverse
-
-2. **justify-content**：主轴对齐方式
-   - flex-start、flex-end、center、space-between、space-around
-
-3. **align-items**：交叉轴对齐方式
-   - flex-start、flex-end、center、baseline、stretch
-
-4. **flex-wrap**：是否换行
-   - nowrap（默认）、wrap、wrap-reverse
-
-5. **flex-flow**：flex-direction 和 flex-wrap 的简写
-
-6. **align-content**：多行对齐方式
-
-**项目属性（子元素）：**
-
-1. **flex-grow**：放大比例（默认 0）
-2. **flex-shrink**：缩小比例（默认 1）
-3. **flex-basis**：占据的主轴空间
-4. **flex**：flex-grow、flex-shrink、flex-basis 的简写
-5. **align-self**：单个项目的对齐方式
-6. **order**：项目的排列顺序`,
-            keywords: ['flex', 'flex-direction', 'justify-content', 'align-items', 'flex-wrap'],
-            hints: [
-                '容器属性 vs 项目属性',
-                '主轴和交叉轴',
-                'justify-content 控制主轴',
-                'align-items 控制交叉轴'
-            ]
+**项目属性：**
+1. flex-grow：放大比例
+2. flex-shrink：缩小比例
+3. flex-basis：默认大小`,
+            hints: ['容器属性 vs 项目属性', '主轴和交叉轴']
         },
         {
-            id: 'css3',
+            id: 'css4',
             title: 'CSS 选择器优先级',
             difficulty: 'Medium',
             category: 'CSS',
@@ -184,7 +200,312 @@ div p               /* 权重：1 + 1 = 2 */
                 '权重可以累加',
                 '后定义的覆盖先定义的'
             ]
+        },
+        {
+            id: 'css5',
+            title: 'CSS 清除浮动',
+            difficulty: 'Medium',
+            category: 'CSS',
+            question: `为什么需要清除浮动？请说明浮动导致的问题，并列出至少三种常见的清除浮动方法。`,
+            tags: ['清除浮动', '布局', 'float', 'BFC', 'clearfix'],
+            points: 15,
+            referenceAnswer: `**为什么需要清除浮动？**
+
+浮动元素（float）会脱离标准文档流，导致父元素高度塌陷，使背景、边框无法包裹内容，并对后续布局产生影响。因此需要清除浮动，让父元素重新包含浮动子元素。
+
+---
+
+## **常见清除浮动的方法**
+
+### **1. clearfix（伪元素清除浮动，最推荐）**
+
+\`\`\`css
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+\`\`\`
+
+**优点：** 兼容性好、不影响布局结构  
+**缺点：** 需要额外的类名  
+
+---
+
+### **2. overflow 触发 BFC**
+
+\`\`\`css
+.container {
+  overflow: auto; /* 或 hidden */
+}
+\`\`\`
+
+**优点：** 简单、无需额外标记  
+**缺点：** overflow 可能隐藏溢出内容或产生滚动条  
+
+---
+
+### **3. display: flow-root（现代方案）**
+
+\`\`\`css
+.container {
+  display: flow-root;
+}
+\`\`\`
+
+**优点：** 最简洁，天然生成 BFC  
+**缺点：** 不支持 IE（但现代浏览器支持良好）
+
+---
+
+### **4. 添加空元素清除浮动（不推荐）**
+
+\`\`\`html
+<div style="clear: both;"></div>
+\`\`\`
+
+**缺点：** 破坏语义、增加无意义 DOM
+
+---
+
+**总结**  
+float 会导致父元素高度塌陷。最推荐的清除方式是 clearfix 或 flow-root，overflow 可用于简单场景，空元素清除方式已不常用。
+`,
+            keywords: ['浮动', '清除浮动', 'clearfix', 'overflow', 'flow-root'],
+            hints: [
+                '浮动会导致父元素高度塌陷',
+                'clearfix 是最常用的解决方案',
+                'overflow 会触发 BFC',
+                'flow-root 是最现代的清除方式'
+            ]
+        },
+        {
+            id: 'css6',
+            title: 'CSS 垂直居中的方案',
+            difficulty: 'Easy',
+            category: 'CSS',
+            question: `常见的垂直居中方案有哪些？请至少列举三种常见的实现方式，并说明各自的优缺点。`,
+            tags: ['垂直居中', '布局', 'flex', 'transform', 'grid'],
+            points: 10,
+            referenceAnswer: `## 常见的垂直居中方案
+
+---
+
+### **1. Flex 垂直居中（最常用）**
+\`\`\`css
+.parent {
+  display: flex;
+  align-items: center;
+}
+\`\`\`
+
+**优点：** 简单、语义清晰、现代浏览器支持好  
+**缺点：** IE9- 不支持
+
+---
+
+### **2. position + transform 垂直居中**
+\`\`\`css
+.child {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+\`\`\`
+
+**优点：** 精准控制位置，不依赖其他属性  
+**缺点：** 父元素必须是定位元素；对响应式布局不如 flex 方便
+
+---
+
+### **3. line-height 垂直居中（仅适用于单行文本）**
+\`\`\`css
+.text {
+  line-height: 200px; /* 等于父容器高度 */
+}
+\`\`\`
+
+**优点：** 简单  
+**缺点：** 只能用于单行文字，无法用于块级元素
+
+---
+
+### **4. Grid 垂直居中（现代方案）**
+\`\`\`css
+.parent {
+  display: grid;
+  place-items: center;
+}
+\`\`\`
+
+**优点：** 最简洁，自动水平 + 垂直居中  
+**缺点：** IE 不支持
+
+---
+
+### **5. table-cell 垂直居中（老旧方案）**
+\`\`\`css
+.parent {
+  display: table-cell;
+  vertical-align: middle;
+}
+\`\`\`
+
+**优点：** 兼容性好（包括 IE）  
+**缺点：** 破坏布局语义，不推荐用于现代项目
+
+---
+
+**总结**  
+Flex 和 Grid 是当前最推荐的垂直居中方案，position+transform 更灵活，line-height 和 table-cell 属于旧方案，用于兼容性场景。
+`,
+            keywords: ['垂直居中', 'flex', 'transform', 'grid', 'line-height'],
+            hints: [
+                'flex 是最常用的方法',
+                'position + transform 不依赖容器的高度',
+                'grid 的 place-items 可以快速居中'
+            ]
+        },
+        {
+            "id": "css7",
+            "title": "em / px / rem / vh / vw 单位的区别",
+            "difficulty": "Easy",
+            "category": "CSS",
+            "question": "说说 em、px、rem、vh、vw 这些 CSS 单位的区别？请分别说明它们的定义、使用场景及注意事项。",
+            "tags": ["CSS单位", "响应式", "布局", "em", "rem", "px", "vh", "vw"],
+            "points": 10,
+            "referenceAnswer": "## em / px / rem / vh / vw 的区别\n\n---\n\n### **1. px（像素）**\n- **定义**：绝对长度单位，1px 表示屏幕上的一个物理像素点（在标准分辨率下）。\n- **特点**：固定大小，不随其他元素变化。\n- **使用场景**：需要精确控制尺寸的场合，如边框、图标大小等。\n- **注意**：在高 DPI 屏幕上，浏览器可能会对 px 做缩放处理，但对用户缩放不敏感（不利于无障碍访问）。\n\n---\n\n### **2. em**\n- **定义**：相对单位，相对于**当前元素的字体大小**（若未设置，则继承自父元素）。\n- **公式**：1em = 当前元素的 font-size\n- **使用场景**：希望组件内部尺寸随自身字体大小缩放（如按钮内边距）。\n- **注意**：嵌套时会**逐层复合**（例如子元素的 1em 可能 ≠ 父元素的 1em），容易造成计算混乱。\n\n---\n\n### **3. rem（root em）**\n- **定义**：相对于**根元素（<html>）的字体大小**。\n- **公式**：1rem = html 元素的 font-size（默认通常为 16px）\n- **使用场景**：实现全局统一的响应式缩放（常用于布局、间距）。\n- **优点**：避免 em 的嵌套问题，便于维护；配合媒体查询可实现整体缩放。\n- **注意**：需确保 html 的 font-size 设置合理（有些项目设为 62.5% 以简化计算：1rem = 10px）。\n\n---\n\n### **4. vh（viewport height）**\n- **定义**：视口高度的 1/100。1vh = 视口高度的 1%。\n- **使用场景**：全屏布局、首屏 hero 区域、动态高度容器。\n- **注意**：移动端 Safari 地址栏显示/隐藏会影响视口高度，可能导致跳动。\n\n---\n\n### **5. vw（viewport width）**\n- **定义**：视口宽度的 1/100。1vw = 视口宽度的 1%。\n- **使用场景**：响应式字体大小（配合 clamp()）、全宽组件、横屏适配。\n- **技巧**：`font-size: calc(14px + 0.5vw);` 可实现平滑响应式文字。\n\n---\n\n### **总结对比**\n| 单位 | 基准 | 是否响应式 | 常见用途 |\n|------|------|-----------|--------|\n| px   | 屏幕像素 | 否 | 固定尺寸、边框 |\n| em   | 当前元素 font-size | 是（局部） | 组件内部比例 |\n| rem  | 根元素 font-size | 是（全局） | 布局、间距、响应式设计 |\n| vh   | 视口高度 | 是 | 全屏高度、动态容器 |\n| vw   | 视口宽度 | 是 | 响应式字体、全宽布局 |\n\n**最佳实践**：\n- 文字大小优先用 `rem` 或 `clamp()` + `vw`\n- 组件内间距可用 `em`\n- 全屏布局用 `vh/vw`\n- 避免在需要精确控制的场景（如图标）使用相对单位",
+            "keywords": ["em", "rem", "px", "vh", "vw", "CSS单位", "响应式设计"],
+            "hints": [
+                "em 相对于当前元素字体大小，rem 相对于根元素",
+                "vh 和 vw 基于视口尺寸，适合全屏布局",
+                "px 是绝对单位，不随用户缩放而改变（部分浏览器例外）"
+            ]
+        },
+        {
+            id: 'css8',
+            title: '两栏布局：左边定宽，右边自适应方案',
+            difficulty: 'Easy',
+            category: 'CSS',
+            question: `如何实现两栏布局：左边定宽，右边自适应？请至少列举三种常见的实现方式，并说明各自的优缺点。`,
+            tags: ['两栏布局', '布局', 'flex', 'float', 'grid'],
+            points: 10,
+            referenceAnswer: `## 两栏布局：左边定宽，右边自适应方案
+
+---
+
+### **1. Flex 布局（最推荐）**
+\`\`\`css
+.container {
+  display: flex;
+}
+.left {
+  width: 200px;
+}
+.right {
+  flex: 1;
+}
+\`\`\`
+
+**优点：** 代码简洁、语义清晰、易维护、响应式友好  
+**缺点：** IE9- 不支持
+
+---
+
+### **2. Float + margin 布局（经典方案）**
+\`\`\`css
+.left {
+  float: left;
+  width: 200px;
+}
+.right {
+  margin-left: 200px;
+}
+\`\`\`
+
+**优点：** 兼容性好（支持 IE6+）  
+**缺点：** 需要清除浮动；HTML 结构有顺序要求；不够语义化
+
+---
+
+### **3. Float + BFC 布局**
+\`\`\`css
+.left {
+  float: left;
+  width: 200px;
+}
+.right {
+  overflow: hidden; /* 触发 BFC */
+}
+\`\`\`
+
+**优点：** 不需要计算 margin 值；右侧自动适应  
+**缺点：** 需要清除浮动；overflow 可能影响内容显示
+
+---
+
+### **4. Position 绝对定位**
+\`\`\`css
+.container {
+  position: relative;
+}
+.left {
+  position: absolute;
+  width: 200px;
+}
+.right {
+  margin-left: 200px;
+}
+\`\`\`
+
+**优点：** 精确控制位置  
+**缺点：** 脱离文档流；高度不易控制；不推荐用于常规布局
+
+---
+
+### **5. Grid 布局（现代方案）**
+\`\`\`css
+.container {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+\`\`\`
+
+**优点：** 最简洁强大；适合复杂布局  
+**缺点：** IE 不支持（IE10/11 需要前缀）
+
+---
+
+### **6. Calc 计算宽度**
+\`\`\`css
+.left {
+  float: left;
+  width: 200px;
+}
+.right {
+  float: left;
+  width: calc(100% - 200px);
+}
+\`\`\`
+
+**优点：** 灵活计算宽度  
+**缺点：** 需要清除浮动；calc 兼容性 IE9+
+
+---
+
+**总结**  
+Flex 和 Grid 是现代项目的首选方案，Float + margin/BFC 适用于需要兼容老旧浏览器的场景。Position 方案不推荐用于常规两栏布局。
+`,
+            keywords: ['两栏布局', 'flex', 'float', 'grid', '自适应', 'BFC'],
+            hints: [
+                'flex 布局是最简单的方法',
+                'float + margin 是经典的老方案',
+                'grid 的 grid-template-columns 可以快速实现'
+            ]
         }
+
+
+
     ],
     'JavaScript': [
         {
