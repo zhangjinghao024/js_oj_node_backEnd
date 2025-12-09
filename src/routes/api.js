@@ -5,6 +5,18 @@ import { getAllRecords, getProblemRecord, resetProblemRecord } from '../services
 import { getAllQuizzes, getQuizById } from '../data/quizQuestions.js';
 import { analyzeQuizAnswer } from '../services/quizAIService.js';
 import { speechToText, base64ToBuffer, convertToPCM } from '../services/speechService.cjs';
+// ⭐ 导入提交记录服务
+import {
+  saveCodeSubmission,
+  saveQuizSubmission,
+  getSubmissions,
+  getSubmissionById,
+  getProblemStats as getSubmissionProblemStats,
+  getUserStats,
+  getRecentSubmissions,
+  deleteSubmission,
+  clearAllSubmissions
+} from '../services/submissionService.js';
 
 const router = express.Router();
 
@@ -103,6 +115,7 @@ router.post('/run', async (req, res) => {
 /**
  * POST /api/judge
  * 提交代码(运行所有测试用例)
+ * ⭐ 增加：保存提交记录
  */
 router.post('/judge', async (req, res) => {
   try {
@@ -125,6 +138,31 @@ router.post('/judge', async (req, res) => {
 
     // 判题
     const result = await judgeCode(problemId, code);
+
+    // ⭐ 保存提交记录
+    try {
+      const problem = getProblemById(problemId);
+      const submissionData = {
+        problemId: problemId,
+        problemTitle: problem?.title || problemId,
+        code: code,
+        language: 'javascript', // 如果支持多语言，从 req.body 获取
+        status: result.status,
+        passedTests: result.passedTests || 0,
+        totalTests: result.totalTests || 0,
+        executionTime: result.executionTime || 0,
+        memoryUsed: result.memoryUsed || 0,
+        errorMessage: result.error || null
+      };
+
+      const saved = saveCodeSubmission(submissionData);
+      result.submissionId = saved.id;
+    } catch (saveError) {
+      console.error('⚠️ 保存提交记录失败:', saveError);
+      console.error('错误堆栈:', saveError.stack);  // ⭐ 新增
+      console.error('submissionData:', submissionData);  // ⭐ 新增
+      // 不影响判题结果返回
+    }
 
     res.json({
       success: true,
@@ -194,6 +232,31 @@ router.post('/analyze', async (req, res) => {
 
     // AI 分析
     const result = await analyzeCode(problemId, code);
+
+    // ⭐⭐⭐ 添加保存记录逻辑 ⭐⭐⭐
+    try {
+      const problem = getProblemById(problemId);
+      const submissionData = {
+        problemId: problemId,
+        problemTitle: problem?.title || problemId,
+        code: code,
+        language: 'javascript',
+        status: result.status || 'analyzed',  // AI 分析的状态
+        passedTests: result.passedTests || 0,
+        totalTests: result.totalTests || 0,
+        executionTime: result.executionTime || 0,
+        memoryUsed: result.memoryUsed || 0,
+        errorMessage: result.error || null
+      };
+
+      const saved = saveCodeSubmission(submissionData);
+      result.submissionId = saved.id;
+      console.log('✅ AI 分析记录已保存, ID:', saved.id);
+    } catch (saveError) {
+      console.error('⚠️ 保存 AI 分析记录失败:', saveError);
+      console.error('错误堆栈:', saveError.stack);
+    }
+    // ⭐⭐⭐ 保存逻辑结束 ⭐⭐⭐
 
     res.json({
       success: true,
@@ -345,6 +408,7 @@ router.get('/quizzes/:id', (req, res) => {
 /**
  * POST /api/quizzes/analyze
  * AI 分析问答题答案
+ * ⭐ 增加：保存提交记录
  */
 router.post('/quizzes/analyze', async (req, res) => {
   try {
@@ -389,8 +453,26 @@ router.post('/quizzes/analyze', async (req, res) => {
 
     console.log('✅ AI 分析结果:', {
       hasAnalysis: result.hasAIAnalysis,
-      score: result.score
+      isCorrect: result.isCorrect
     });
+
+    // ⭐ 保存提交记录
+    try {
+      const submissionData = {
+        problemId: quizId,
+        problemTitle: quiz.title,
+        answer: userAnswer,
+        isCorrect: result.isCorrect || false,
+        score: result.score || 0,
+        aiAnalysis: result.aiAnalysis || null,
+        aiFeedback: result.feedback || null
+      };
+
+      const saved = saveQuizSubmission(submissionData);
+      result.submissionId = saved.id;
+    } catch (saveError) {
+      console.error('⚠️ 保存提交记录失败:', saveError);
+    }
 
     res.json({
       success: true,
@@ -456,6 +538,170 @@ router.post('/speech-to-text', async (req, res) => {
       success: false,
       error: '语音识别失败',
       message: error.message
+    });
+  }
+});
+
+// ==================== ⭐ 提交记录相关路由 ====================
+
+/**
+ * GET /api/submissions
+ * 获取提交历史
+ * 参数: ?problemId=xxx&problemType=code&limit=20&offset=0
+ */
+router.get('/submissions', (req, res) => {
+  try {
+    const { problemId, userId, problemType, limit, offset } = req.query;
+
+    const result = getSubmissions({
+      problemId,
+      userId,
+      problemType,
+      limit: parseInt(limit) || 20,
+      offset: parseInt(offset) || 0
+    });
+
+    res.json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    console.error('获取提交历史失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/submissions/recent
+ * 获取最近提交
+ * 参数: ?limit=10
+ */
+router.get('/submissions/recent', (req, res) => {
+  try {
+    const { limit } = req.query;
+    const submissions = getRecentSubmissions(parseInt(limit) || 10);
+
+    res.json({
+      success: true,
+      data: submissions
+    });
+  } catch (error) {
+    console.error('获取最近提交失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/submissions/:id
+ * 获取单个提交详情
+ */
+router.get('/submissions/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const submission = getSubmissionById(id);
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        error: '提交记录不存在'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: submission
+    });
+  } catch (error) {
+    console.error('获取提交详情失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/submissions/stats/problem/:id
+ * 获取题目的提交统计
+ */
+router.get('/submissions/stats/problem/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const stats = getSubmissionProblemStats(id);
+
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('获取题目统计失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/submissions/stats/user/:id
+ * 获取用户的提交统计
+ */
+router.get('/submissions/stats/user/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const stats = getUserStats(id);
+
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('获取用户统计失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/submissions/:id
+ * 删除提交记录
+ */
+router.delete('/submissions/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = deleteSubmission(id);
+
+    res.json(result);
+  } catch (error) {
+    console.error('删除提交记录失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/submissions
+ * 清空所有提交记录
+ */
+router.delete('/submissions', (req, res) => {
+  try {
+    const result = clearAllSubmissions();
+    res.json(result);
+  } catch (error) {
+    console.error('清空记录失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
     });
   }
 });

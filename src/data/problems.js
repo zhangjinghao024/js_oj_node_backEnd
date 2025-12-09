@@ -250,7 +250,7 @@ function Parent(name) {
 }
 
 Parent.prototype.sayHello = function() {
-    console.log(\`Hello, I'm ${this.name}\`);
+   
 };
 
 // 子类
@@ -268,7 +268,6 @@ Child.prototype.constructor = Child;
 
 // 4. 添加子类自己的方法
 Child.prototype.sayAge = function() {
-    console.log(\`I'm ${this.age} years old\`);
 };`,
     template: ``,
   },
@@ -276,42 +275,170 @@ Child.prototype.sayAge = function() {
     id: '10',
     title: '实现 Promise.resolve',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    实现 resolve 静态方法有三个要点:
+
+    传参为一个 Promise, 则直接返回它。
+    传参为一个 thenable 对象，返回的 Promise 会跟随这个对象，采用它的最终状态作为自己的状态。
+    其他情况，直接返回以该值为成功状态的promise对象。
+    `,
     template: ``,
   },
   {
     id: '11',
     title: '实现 Promise.reject',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    Promise.reject 中传入的参数会作为一个 reason 原封不动地往下传, 实现如下:
+    `,
     template: ``,
   },
   {
     id: '12',
     title: '实现 Promise.finally',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    前面的promise不管成功还是失败，都会走到finally中，并且finally之后，还可以继续then（说明它还是一个then方法是关键），并且会将初始的promise值原封不动的传递给后面的then.
+
+    Promise.prototype.finally最大的作用
+    
+    finally里的函数，无论如何都会执行，并会把前面的值原封不动传递给下一个then方法中
+    如果finally函数中有promise等异步任务，会等它们全部执行完毕，再结合之前的成功与否状态，返回值
+    Promise.prototype.finally六大情况用法
+    #3 实现 Promise.prototype.finally
+前面的promise不管成功还是失败，都会走到finally中，并且finally之后，还可以继续then（说明它还是一个then方法是关键），并且会将初始的promise值原封不动的传递给后面的then.
+
+Promise.prototype.finally最大的作用
+
+finally里的函数，无论如何都会执行，并会把前面的值原封不动传递给下一个then方法中
+如果finally函数中有promise等异步任务，会等它们全部执行完毕，再结合之前的成功与否状态，返回值
+Promise.prototype.finally六大情况用法
+
+// 情况1
+Promise.resolve(123).finally((data) => { // 这里传入的函数，无论如何都会执行
+  console.log(data); // undefined
+})
+
+// 情况2 (这里，finally方法相当于做了中间处理，起一个过渡的作用)
+Promise.resolve(123).finally((data) => {
+  console.log(data); // undefined
+}).then(data => {
+  console.log(data); // 123
+})
+
+// 情况3 (这里只要reject，都会走到下一个then的err中)
+Promise.reject(123).finally((data) => {
+  console.log(data); // undefined
+}).then(data => {
+  console.log(data);
+}, err => {
+  console.log(err, 'err'); // 123 err
+})
+
+// 情况4 (一开始就成功之后，会等待finally里的promise执行完毕后，再把前面的data传递到下一个then中)
+Promise.resolve(123).finally((data) => {
+  console.log(data); // undefined
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('ok');
+    }, 3000)
+  })
+}).then(data => {
+  console.log(data, 'success'); // 123 success
+}, err => {
+  console.log(err, 'err');
+})
+
+// 情况5 (虽然一开始成功，但是只要finally函数中的promise失败了，就会把其失败的值传递到下一个then的err中)
+Promise.resolve(123).finally((data) => {
+  console.log(data); // undefined
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('rejected');
+    }, 3000)
+  })
+}).then(data => {
+  console.log(data, 'success');
+}, err => {
+  console.log(err, 'err'); // rejected err
+})
+
+// 情况6 (虽然一开始失败，但是也要等finally中的promise执行完，才能把一开始的err传递到err的回调中)
+Promise.reject(123).finally((data) => {
+  console.log(data); // undefined
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('resolve');
+    }, 3000)
+  })
+}).then(data => {
+  console.log(data, 'success');
+}, err => {
+  console.log(err, 'err'); // 123 err
+})
+    `,
     template: ``,
   },
   {
     id: '13',
     title: '实现 Promise.all',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    对于 all 方法而言，需要完成下面的核心功能:
+
+    传入参数为一个空的可迭代对象，则直接进行resolve。
+    如果参数中有一个promise失败，那么Promise.all返回的promise对象失败。
+    在任何情况下，Promise.all 返回的 promise 的完成状态的结果都是一个数组
+    function myPromiseAll(promises) {
+  // 返回一个新的 Promise
+  return new Promise((resolve, reject) => {
+    
+    const results = []; // 存放所有结果
+    let completedCount = 0; // 记录完成了几个
+    
+    // 遍历每个 promise
+    promises.forEach((promise, index) => {
+      
+      // 等这个 promise 完成
+      promise
+        .then(result => {
+          results[index] = result; // 把结果放到对应位置
+          completedCount++; // 完成数量 +1
+          
+          // 如果所有的都完成了
+          if (completedCount === promises.length) {
+            resolve(results); // 返回所有结果
+          }
+        })
+        .catch(error => {
+          reject(error); // 只要有一个失败，整个就失败
+        });
+    });
+  });
+}
+    `,
     template: ``,
   },
   {
     id: '14',
     title: '实现 Promise.allSettle',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    MDN: Promise.allSettled()方法返回一个在所有给定的promise都已经fulfilled或rejected后的promise，并带有一个对象数组，每个对象表示对应的promise\`结果
+
+    当您有多个彼此不依赖的异步任务成功完成时，或者您总是想知道每个promise的结果时，通常使用它。
+
+    【译】Promise.allSettled 跟 Promise.all 类似, 其参数接受一个Promise的数组, 返回一个新的Promise, 唯一的不同在于, 其不会进行短路, 也就是说当Promise全部处理完成后我们可以拿到每个Promise的状态, 而不管其是否处理成功。
+    `,
     template: ``,
   },
   {
     id: '15',
     title: '实现 Promise.race',
     difficulty: 'Medium',
-    description: ``,
+    description: `
+    race 的实现相比之下就简单一些，只要有一个 promise 执行完，直接 resolve 并停止执行
+    `,
     template: ``,
   },
   {
