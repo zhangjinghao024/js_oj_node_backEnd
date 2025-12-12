@@ -542,6 +542,14 @@ function fn4(x) {
 }
 const a = compose(fn1, fn2, fn3, fn4);
 console.log(a(1)); // 1+4+3+2+1=11
+
+提示：
+    数组.reduce((累积值, 当前值) => {
+      // 做一些计算
+      return 新的累积值;
+    }, 初始值);
+
+
     `,
     template: ``,
   },
@@ -598,6 +606,21 @@ parseToMoney(1087654.321); // return '1,087,654.321'
 通过函数的 length 属性，获取函数的形参个数，形参的个数就是所需的参数个数
 在调用柯里化工具函数时，手动指定所需的参数个数
 将这两点结合一下，实现一个简单 curry 函数
+// 普通函数：一次传入所有参数
+function add(a, b, c) {
+    return a + b + c;
+}
+add(1, 2, 3);  // 6
+
+// 柯里化后：可以分多次传参
+const curriedAdd = curry(add);
+curriedAdd(1)(2)(3);  // 6
+curriedAdd(1, 2)(3);  // 6
+curriedAdd(1)(2, 3);  // 6
+
+核心难点
+这道题的难点是：怎么知道什么时候该返回结果？
+
     `,
     template: ``,
   },
@@ -616,8 +639,359 @@ add(1, 2, 3); // 6
     template: ``,
   },
   {
-    id: '121',
-    title: '',
+    id: '27',
+    title: '对象拍平',
+    difficulty: 'Medium',
+    description: `
+    将嵌套的多层对象转换为单层对象,使用点号(.)连接嵌套的键名。问题说明当我们有一个深层嵌套的对象时,访问深层属性比较麻烦。扁平化后可以:
+
+更容易地遍历所有属性
+简化数据的存储(如存入数据库)
+便于数据对比和序列化
+// 例子1: 基本嵌套对象
+const user = {
+  name: 'John',
+  address: {
+    city: 'Beijing',
+    detail: {
+      street: 'Chaoyang Road',
+      number: 123
+    }
+  },
+  age: 30
+}
+console.log(objectFlat(user))
+// 输出: {
+//   name: 'John',
+//   'address.city': 'Beijing',
+//   'address.detail.street': 'Chaoyang Road',
+//   'address.detail.number': 123,
+//   age: 30
+// }
+
+// 例子2: 配置对象
+const config = {
+  database: {
+    host: 'localhost',
+    port: 3306,
+    credentials: {
+      username: 'admin',
+      password: '123456'
+    }
+  },
+  server: {
+    port: 8080
+  }
+}
+console.log(objectFlat(config))
+// 输出: {
+//   'database.host': 'localhost',
+//   'database.port': 3306,
+//   'database.credentials.username': 'admin',
+//   'database.credentials.password': '123456',
+//   'server.port': 8080
+// }
+    `,
+    template: ``,
+  },
+  {
+    id: '28',
+    title: '实现lodash的chunk方法',
+    difficulty: 'Medium',
+    description: `
+    数组按指定长度拆分
+    
+    _.chunk(['a', 'b', 'c', 'd'], 2)
+// => [['a', 'b'], ['c', 'd']]
+
+_.chunk(['a', 'b', 'c', 'd'], 3)
+// => [['a', 'b', 'c'], ['d']]
+
+_.chunk(['a', 'b', 'c', 'd'], 5)
+// => [['a', 'b', 'c', 'd']]
+
+_.chunk(['a', 'b', 'c', 'd'], 0)
+// => []
+    `,
+    template: ``,
+  },
+  {
+    id: '29',
+    title: ' 手写深度比较isEqual',
+    difficulty: 'Medium',
+    description: `
+    思路：深度比较两个对象，就是要深度比较对象的每一个元素。=> 递归
+
+递归退出条件：
+被比较的是两个值类型变量，直接用“===”判断
+被比较的两个变量之一为null，直接判断另一个元素是否也为null
+提前结束递推：
+两个变量keys数量不同
+传入的两个参数是同一个变量
+递推工作：深度比较每一个key
+    `,
+    template: ``,
+  },
+  {
+    id: '30',
+    title: '实现一个JSON.stringify',
+    difficulty: 'Medium',
+    description: `
+    JSON.stringify 是 JavaScript 的内置方法,用于将 JavaScript 值(对象、数组等)转换为 JSON 字符串。
+基本语法
+javascriptJSON.stringify(value, replacer, space)
+// 对象转字符串
+const obj = { name: '张三', age: 25, city: '北京' }
+const jsonStr = JSON.stringify(obj)
+console.log(jsonStr)
+// 输出: '{"name":"张三","age":25,"city":"北京"}'
+
+// 数组转字符串
+const arr = [1, 2, 3, 'hello']
+console.log(JSON.stringify(arr))
+// 输出: '[1,2,3,"hello"]'
+
+// 嵌套对象
+const nested = {
+  user: {
+    name: '李四',
+    hobbies: ['reading', 'coding']
+  }
+}
+console.log(JSON.stringify(nested))
+// 输出: '{"user":{"name":"李四","hobbies":["reading","coding"]}}'
+
+    `,
+    template: ``,
+  },
+  {
+    id: '31',
+    title: '实现一个JSON.parse',
+    difficulty: 'Medium',
+    description: `
+    用来解析JSON字符串，构造由字符串描述的JavaScript值或对象。提供可选的reviver函数用以在返回之前对所得到的对象执行变换(操作)
+    `,
+    template: ``,
+  },
+  {
+    id: '32',
+    title: '转化为驼峰命名',
+    difficulty: 'Easy',
+    description: `
+    var s1 = "get-element-by-id"
+    转化为 getElementById
+    `,
+    template: ``,
+  },
+  {
+    id: '33',
+    title: ' 实现一个函数判断数据类型',
+    difficulty: 'Medium',
+    description: `
+    调用:
+      getType(null); // -> null
+      getType(undefined); // -> undefined
+      getType({}); // -> object
+      getType([]); // -> array
+      getType(123); // -> number
+      getType(true); // -> boolean
+      getType('123'); // -> string
+      getType(/123/); // -> regexp
+      getType(new Date()); // -> date
+    `,
+    template: ``,
+  },
+  {
+    id: '34',
+    title: '对象数组列表转成树形结构（处理菜单）',
+    difficulty: 'Medium',
+    description: `
+    问题描述
+      将扁平化的对象数组转换为具有层级关系的树形结构。这是前端开发中非常常见的需求,特别是在处理菜单、组织架构、分类目录等场景。
+      核心特点
+      输入: 扁平的数组,每个对象通过 parentId 字段标识其父节点
+      输出: 嵌套的树形结构,子节点放在父节点的 children 数组中
+      典型应用场景
+      
+      菜单系统: 后端返回扁平菜单列表,前端转为树形菜单
+      组织架构: 员工列表转为部门树
+      商品分类: 分类列表转为多级分类树
+      评论系统: 评论列表转为带回复的树形结构
+      文件目录: 文件列表转为文件夹树
+      #10 对象数组列表转成树形结构（处理菜单）
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0 //这里用0表示为顶级节点
+    },
+    {
+        id: 2,
+        text: '节点1_1',
+        parentId: 1 //通过这个字段来确定子父级
+    }
+    ...
+]
+
+转成
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0,
+        children: [
+            {
+                id:2,
+                text: '节点1_1',
+                parentId:1
+            }
+        ]
+    }
+]
+    `,
+    template: ``,
+  },
+  {
+    id: '35',
+    title: '树形结构转成列表（处理菜单）',
+    difficulty: 'Medium',
+    description: `
+    #11 树形结构转成列表（处理菜单）
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0,
+        children: [
+            {
+                id:2,
+                text: '节点1_1',
+                parentId:1
+            }
+        ]
+    }
+]
+转成
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0 //这里用0表示为顶级节点
+    },
+    {
+        id: 2,
+        text: '节点1_1',
+        parentId: 1 //通过这个字段来确定子父级
+    }
+    ...
+]
+    `,
+    template: ``,
+  },
+  {
+    id: '36',
+    title: '实现一个 sleep 函数，比如 sleep(1000) 意味着等待1000毫秒',
+    difficulty: 'Easy',
+    description: `
+    sleep(1000).then(() => {
+  // 这里写你的骚操作
+})
+    `,
+    template: ``,
+  },
+  {
+    id: '37',
+    title: '给定两个数组，写一个方法来计算它们的交集',
+    difficulty: 'Easy',
+    description: `
+    例如：给定 nums1 = [1, 2, 2, 1]，nums2 = [2, 2]，返回 [2, 2]。
+    `,
+    template: ``,
+  },
+  {
+    id: '38',
+    title: '异步并发数限制）',
+    difficulty: 'Hard',
+    description: `
+    /**
+ * 关键点
+ * 1. new promise 一经创建，立即执行
+ * 2. 使用 Promise.resolve().then 可以把任务加到微任务队列，防止立即执行迭代方法
+ * 3. 微任务处理过程中，产生的新的微任务，会在同一事件循环内，追加到微任务队列里
+ * 4. 使用 race 在某个任务完成时，继续添加任务，保持任务按照最大并发数进行执行
+ * 5. 任务完成后，需要从 doingTasks 中移出
+ */
+ const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i))
+limit(2, [1000, 1000, 1000, 1000], timeout).then((res) => {
+  console.log(res)
+})
+ 
+    `,
+    template: ``,
+  },
+  {
+    id: '39',
+    title: '异步串行 | 异步并行',
+    difficulty: 'Hard',
+    description: `
+   给定一个每次只能计算两个数相加的异步函数,如何高效地计算多个数的总和?
+   
+      考察点:
+      
+      Promise 封装(Promisify)
+      异步流程控制
+      串行 vs 并行的性能优化
+      reduce、Promise.all 等高阶用法
+      
+      问题分析
+      限制条件
+      
+      asyncAdd 每次只能加两个数
+      每次计算需要 500ms (模拟网络请求或复杂计算)
+      需要计算多个数的总和
+      
+      两种解决方案对比
+      方案执行方式时间复杂度适用场景串行顺序执行,一个接一个O(n) × 500ms依赖前一个结果并行同时执行,分治递归O(log n) × 500ms独立计算可并行
+    `,
+    template: ``,
+  },
+  {
+    id: '40',
+    title: '图片懒加载',
+    difficulty: 'Hard',
+    description: `
+<!--// <img src="default.png" data-src="https://xxxx/real.png">-->
+<!--// 测试-->
+<!--window.addEventListener('load', imageLazyLoad)-->
+<!--window.addEventListener('scroll', imageLazyLoad)-->
+<!--// or-->
+<!--window.addEventListener('scroll', throttle(imageLazyLoad, 1000))-->
+    `,
+    template: ``,
+  },
+  {
+    id: '41',
+    title: '创建10个标签，点击的时候弹出来对应的序号',
+    difficulty: 'Easy',
+    description: `
+    题目描述:有一组版本号如下 ['0.1.1', '2.3.3', '0.302.1', '4.2', '4.3.5', '4.3.4.5']。现在需要对其进行排序，排序的结果为 ['4.3.5','4.3.4.5','2.3.3','0.302.1','0.1.1']
+    `,
+    template: ``,
+  },
+  {
+    id: '42',
+    title: '版本号排序的方法',
+    difficulty: 'Easy',
+    description: `
+    sleep(1000).then(() => {
+  // 这里写你的骚操作
+})
+    `,
+    template: ``,
+  },
+  {
+    id: '43',
+    title: 'End',
     difficulty: 'Medium',
     description: `
     `,

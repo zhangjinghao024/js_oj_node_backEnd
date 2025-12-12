@@ -140,7 +140,7 @@ export async function quickAnalyzeCode(code, problemTitle, problemDescription) {
 ${code}
 \`\`\`
 
-请严格按照以下格式回复（使用 Markdown 格式）：
+请严格按照以下格式回复（使用 Markdown 格式,）：
 
 如果代码正确：
 ## ✅ 代码正确
@@ -158,7 +158,7 @@ ${code}
 - 如何修复
 
 要求：
-1. 开门见山，直接说对错
+1. 开门见山，直接说对错，不要过于严格，但也要保证语法、逻辑、功能正确
 2. 错误要具体，指出代码哪里有问题
 3. 每条错误单独一行，用 ⚠️ 开头
 4. 不要说废话，不要重复题目，不要解释太多
