@@ -1,6 +1,24 @@
 {
   "submissions": [
     {
+      "id": "1765291901201xg56pnju2",
+      "problemId": "20",
+      "problemTitle": "实现ES6的const",
+      "problemType": "code",
+      "userId": "guest",
+      "userName": "Guest",
+      "submittedCode": "myConst = (data, value) => {\n    Object.defineProperty(window, data, {\n        enumerable: false,\n        configurable: false,\n        get: function() {\n            return value\n        },\n        set: function(newValue) {\n            throw new TypeError('Assignment to constant variable.')\n        }\n    })\n}",
+      "language": "javascript",
+      "status": "Success",
+      "isCorrect": false,
+      "passedTests": 0,
+      "totalTests": 0,
+      "executionTime": 0,
+      "memoryUsed": 0,
+      "errorMessage": null,
+      "submittedAt": "2025-12-09T14:51:41.201Z"
+    },
+    {
       "id": "1765283528690jkhu3fk62",
       "problemId": "18",
       "problemTitle": "实现【观察者】模式",

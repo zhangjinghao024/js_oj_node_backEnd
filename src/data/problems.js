@@ -512,6 +512,117 @@ setState() - 状态改变时自动通知
     description: ``,
     template: ``,
   },
+  {
+    id: '20',
+    title: '实现ES6的const',
+    difficulty: 'Medium',
+    description: `
+    由于ES5环境没有block的概念，所以是无法百分百实现const，只能是挂载到某个对象下，要么是全局的window，要么就是自定义一个object来当容器
+    `,
+    template: ``,
+  },
+  {
+    id: '21',
+    title: '实现一个compose函数',
+    difficulty: 'Medium',
+    description: `
+    组合多个函数，从右到左，比如：compose(f, g, h) 最终得到这个结果 (...args) => f(g(h(...args))).
+    // 用法如下:
+function fn1(x) {
+  return x + 1;
+}
+function fn2(x) {
+  return x + 2;
+}
+function fn3(x) {
+  return x + 3;
+}
+function fn4(x) {
+  return x + 4;
+}
+const a = compose(fn1, fn2, fn3, fn4);
+console.log(a(1)); // 1+4+3+2+1=11
+    `,
+    template: ``,
+  },
+  {
+    id: '22',
+    title: 'LRU问题',
+    difficulty: 'Medium',
+    description: `
+    LRU 英文全称是 Least Recently Used，英译过来就是”最近最少使用“的意思。LRU 是一种常用的页面置换算法，选择最近最久未使用的页面予以淘汰。该算法赋予每个页面一个访问字段，用来记录一个页面自上次被访问以来所经历的时间 t，当须淘汰一个页面时，选择现有页面中其 t 值最大的，即最近最少使用的页面予以淘汰
+    
+    https://leetcode.cn/problems/lru-cache/description/?envType=study-plan-v2&envId=top-100-liked
+    `,
+    template: ``,
+  },
+  {
+    id: '23',
+    title: '实现数组扁平化flat（数组拍平）',
+    difficulty: 'Medium',
+    description: `
+    题目描述: 实现一个方法使多维数组变成一维数组
+    let ary = [1, [2, [3, [4, 5]]], 6];
+let str = JSON.stringify(ary);
+    `,
+    template: ``,
+  },
+  {
+    id: '24',
+    title: '实现千位分隔符',
+    difficulty: 'Medium',
+    description: `
+// 保留三位小数
+parseToMoney(1234.56); // return '1,234.56'
+parseToMoney(123456789); // return '123,456,789'
+parseToMoney(1087654.321); // return '1,087,654.321'
+    `,
+    template: ``,
+  },
+  {
+    id: '25',
+    title: '实现一个JS函数柯里化',
+    difficulty: 'Medium',
+    description: `
+    预先处理的思想，利用闭包的机制
+
+柯里化的定义：接收一部分参数，返回一个函数接收剩余参数，接收足够参数后，执行原函数
+函数柯里化的主要作用和特点就是参数复用、提前返回和延迟执行
+柯里化把多次传入的参数合并，柯里化是一个高阶函数
+每次都返回一个新函数
+每次入参都是一个
+当柯里化函数接收到足够参数后，就会执行原函数，如何去确定何时达到足够的参数呢？
+
+有两种思路：
+
+通过函数的 length 属性，获取函数的形参个数，形参的个数就是所需的参数个数
+在调用柯里化工具函数时，手动指定所需的参数个数
+将这两点结合一下，实现一个简单 curry 函数
+    `,
+    template: ``,
+  },
+  {
+    id: '26',
+    title: '请实现一个 add 函数，满足以下功能add(1, 2)(3) = 6',
+    difficulty: 'Medium',
+    description: `
+add(1); \t\t\t// 1
+add(1)(2);  \t// 3
+add(1)(2)(3)；// 6
+add(1)(2, 3); // 6
+add(1, 2)(3); // 6
+add(1, 2, 3); // 6
+    `,
+    template: ``,
+  },
+  {
+    id: '121',
+    title: '',
+    difficulty: 'Medium',
+    description: `
+    `,
+    template: ``,
+  },
 ];
 
 // 根据ID获取题目
